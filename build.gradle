@@ -1,52 +1,31 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.grails.org/grails/core/" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:7.0.0-SNAPSHOT"
+    }
+}
+
 plugins {
-    id "groovy"
-    id "org.grails.grails-web"
-    id "org.grails.grails-gsp"
-    id "com.github.erdi.webdriver-binaries"
+    id "com.bertramlabs.asset-pipeline" version "5.0.1"
+    id "com.github.erdi.webdriver-binaries" version "3.2"
     id "war"
     id "idea"
-    id "com.bertramlabs.asset-pipeline"
     id "application"
-    id "eclipse"
 }
+apply plugin:"org.grails.grails-web"
+apply plugin:"org.grails.grails-gsp"
 
 group = "website"
 
 repositories {
     mavenCentral()
     maven { url "https://repo.grails.org/grails/core/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
-
-configurations {
-    all {
-        resolutionStrategy.eachDependency { DependencyResolveDetails details->
-            if (details.requested.group == 'org.seleniumhq.selenium') {
-                details.useVersion('4.19.1')
-            }
-        }
-        exclude group: 'io.micronaut', module:'micronaut-inject-groovy'
-
-        resolutionStrategy.dependencySubstitution {
-            substitute module("org.codehaus.groovy:groovy-all") using module("org.apache.groovy:groovy:$groovyVersion")
-        }
-
-        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-            if ((details.requested.group == 'org.codehaus.groovy' || details.requested.group == 'org.apache.groovy') && details.requested.name != 'groovy-bom') {
-                details.useTarget(group: 'org.apache.groovy', name: details.requested.name, version: "$groovyVersion")
-                details.because "The dependency coordinates are changed in Apache Groovy 4, plus ensure version"
-            }
-
-            if (details.requested.group == "io.micronaut" && details.requested.name == "micronaut-inject-groovy") {
-                details.useVersion("4.6.1")
-            }
-        }
-
-    }
-}
-
 
 dependencies {
-    implementation 'org.apache.groovy:groovy-all:4.0.22'
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
     implementation("org.grails:grails-plugin-databinding")
@@ -59,6 +38,7 @@ dependencies {
     implementation("org.grails.plugins:gsp")
     implementation("org.grails.plugins:hibernate5")
     implementation("org.grails.plugins:scaffolding")
+    implementation("org.sitemesh:grails-plugin-sitemesh3:7.0.0-SNAPSHOT")
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -66,7 +46,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     console("org.grails:grails-console")
-    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails:5.0.0")
+    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails:5.0.1")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
     runtimeOnly("org.fusesource.jansi:jansi:1.18")
@@ -77,7 +57,7 @@ application {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion("21")
+    sourceCompatibility = JavaVersion.toVersion("17")
 }
 
 tasks.withType(Test) {
