@@ -63,6 +63,14 @@ hibernate:
     use_second_level_cache: false
     use_query_cache: false
 spring:
+  jmx:
+    enabled: true
   output:
     ansi:
       enabled: always
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: shutdown
