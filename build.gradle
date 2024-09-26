@@ -81,3 +81,15 @@ tasks.withType(Test) {
     systemProperty 'webdriver.chrome.driver', "${System.getenv('CHROMEWEBDRIVER')}/chromedriver"
     systemProperty 'webdriver.gecko.driver', "${System.getenv('GECKOWEBDRIVER')}/geckodriver"
 }
+
+// requires JetBrains Java
+// https://github.com/HotswapProjects/HotswapAgent/releases
+// sdk install java 21.0.4-jbr
+// mkdir ~/.sdkman/candidates/java/21.0.4-jbr/lib/hotswap/
+// cp lib/hotswap-agent-2.0.1.jar ~/.sdkman/candidates/java/21.0.4-jbr/lib/hotswap/hotswap-agent.jar
+bootRun {
+    jvmArgs(
+            '-XX:+AllowEnhancedClassRedefinition',
+            '-javaagent:lib/groovyReset.jar',
+            '-XX:HotswapAgent=fatjar')
+}
