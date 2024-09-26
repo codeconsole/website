@@ -25,6 +25,18 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+// Temporary exclusions for unneeded dependencies
+configurations {
+    all {
+        exclude group: "org.grails", module: "grails-web-sitemesh" // org.grails.plugins:async:7.0.0-SNAPSHOT
+        exclude group: "opensymphony", module: "sitemesh" //org.grails.plugins:async:7.0.0-SNAPSHOT
+        exclude group: "org.glassfish.jaxb", module: "jaxb-runtime"
+        exclude group: "org.apache.groovy", module: "groovy-ant"
+        exclude group: "org.junit.jupiter", module: "junit-jupiter-api"
+        exclude group: "org.apache.ant", module: "ant"
+    }
+}
+
 dependencies {
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
