@@ -18,6 +18,7 @@ git tag <version>
 git push origin --tags
 ```
 
-https://github.com/codeconsole/website/compare/3.3.9..4.0.0.RC2
-https://github.com/codeconsole/website/compare/5.0.0..5.0.3
-https://github.com/codeconsole/website/compare/6.1.0..6.1.1
+Run the wrapper with Live Reloading
+```
+git clone --single-branch -b 7.0.0-SNAPSHOT https://github.com/codeconsole/website.git website7 && cd website7 && sdk env install && ./hotswapSetup.sh && ./grailsw
+```
