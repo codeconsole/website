@@ -4,8 +4,6 @@ info:
     version: '@info.app.version@'
     grailsVersion: '@info.app.grailsVersion@'
 grails:
-  controllers:
-    defaultScope: singleton
   views:
     default:
       codec: html
