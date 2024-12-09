@@ -8,7 +8,7 @@ class Sample {
     Date dateCreated
     Date lastUpdated
 
-    static mapWith = "none"
+    static mapWith = "test"
 
     static constraints = {
     }
