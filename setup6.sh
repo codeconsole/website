@@ -1,3 +1,4 @@
+rm -rf website-old
 mv website website-old
 grails create-app website
 cd website
