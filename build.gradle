@@ -73,6 +73,8 @@ dependencies {
     testImplementation "org.apache.grails:grails-testing-support-datamapping"
     testImplementation "org.spockframework:spock-core"
     testImplementation "org.apache.grails:grails-testing-support-web"
+
+    assets "cloud.wondrify:less-asset-pipeline:5.0.14"
 }
 
 compileJava.options.release = 17
