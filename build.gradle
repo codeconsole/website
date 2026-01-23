@@ -58,6 +58,7 @@ dependencies {
     implementation "org.apache.grails:grails-layout"
     implementation "org.apache.grails:grails-interceptors"
     implementation "org.apache.grails:grails-scaffolding"
+    implementation "org.webjars:webjars-locator-core"
     implementation "org.apache.grails:grails-data-hibernate5"
     implementation "org.apache.grails:grails-gsp"
     integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
