@@ -3,6 +3,7 @@ package website
 class UrlMappings {
 
     static mappings = {
+        "/$namespace/$controller/$action?/$id?(.$format)?" {}
         "/$controller/$action?/$id?(.$format)?"{
             constraints {
                 // apply constraints here
