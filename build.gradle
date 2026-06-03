@@ -4,6 +4,12 @@ buildscript {
         maven {
             url = 'https://repo.grails.org/grails/restricted'
         }
+        maven {
+            url = 'https://repository.apache.org/content/groups/public'
+        }
+        maven {
+            url = 'https://central.sonatype.com/repository/maven-snapshots/'
+        }
     }
     dependencies {
         classpath platform("org.apache.grails:grails-bom:$grailsVersion")
@@ -28,6 +34,12 @@ repositories {
     maven {
         url = 'https://repo.grails.org/grails/restricted'
     }
+    maven {
+        url = 'https://repository.apache.org/content/groups/public'
+    }
+    maven {
+        url = 'https://central.sonatype.com/repository/maven-snapshots/'
+    }
 }
 
 dependencies {
@@ -47,7 +59,7 @@ dependencies {
     implementation "org.apache.grails:grails-databinding"
     implementation "org.apache.grails:grails-services"
     implementation "org.apache.grails:grails-url-mappings"
-    implementation "org.apache.grails:grails-layout"
+    implementation "org.apache.grails:grails-sitemesh3"
     implementation "org.apache.grails:grails-interceptors"
     implementation "org.apache.grails:grails-scaffolding"
     implementation "org.apache.grails:grails-data-hibernate5"
