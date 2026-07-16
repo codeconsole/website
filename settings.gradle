@@ -1,1 +1,7 @@
 rootProject.name = 'website'
+
+// Build against the local grails-core checkout so edits to the Spring Security
+// plugin (and any other framework module) are picked up without republishing.
+// Gradle substitutes every external org.apache.grails:* coordinate this app
+// requests with the matching project from that build.
+includeBuild('../grails/grails-core/.claude/worktrees/create-app-ui')

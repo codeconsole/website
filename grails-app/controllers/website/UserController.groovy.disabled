@@ -1,0 +1,7 @@
+package website
+
+import grails.plugin.scaffolding.annotation.Scaffold
+import grails.plugin.scaffolding.RestfulServiceController
+
+@Scaffold(RestfulServiceController<User>)
+class UserController {}

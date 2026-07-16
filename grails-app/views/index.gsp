@@ -11,6 +11,9 @@
                .sort { a, b -> a.plugin.name.toLowerCase() <=> b.plugin.name.toLowerCase() }}"
 />
 <g:set var="numControllers" value="${grailsApplication.controllerClasses.size()}"/>
+<g:set var="numDomains" value="${grailsApplication.domainClasses.size()}"/>
+<g:set var="numServices" value="${grailsApplication.serviceClasses.size()}"/>
+<g:set var="numTagLibs" value="${grailsApplication.tagLibClasses.size()}"/>
 <!doctype html>
 <html>
 <head>
@@ -179,24 +182,30 @@
                             <h6 class="card-title mb-0 fw-semibold"><g:message code="welcome.artefact.counts"/></h6>
                         </div>
 
-                        <ul class="list-group list-group-flush small">
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <%-- Each row jumps to the available-artefacts card already switched to
+                             its type; the plain anchor is the no-JS fallback (jump only). --%>
+                        <div class="list-group list-group-flush small">
+                            <a href="#available-artefacts" data-switch-jump="controllers"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
                                 <span class="text-body-secondary"><g:message code="welcome.artefact.controllers"/></span>
                                 <span class="fw-medium">${numControllers}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            </a>
+                            <a href="#available-artefacts" data-switch-jump="domains"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
                                 <span class="text-body-secondary"><g:message code="welcome.artefact.domains"/></span>
-                                <span class="fw-medium">${grailsApplication.domainClasses.size()}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="fw-medium">${numDomains}</span>
+                            </a>
+                            <a href="#available-artefacts" data-switch-jump="services"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
                                 <span class="text-body-secondary"><g:message code="welcome.artefact.services"/></span>
-                                <span class="fw-medium">${grailsApplication.serviceClasses.size()}</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="fw-medium">${numServices}</span>
+                            </a>
+                            <a href="#available-artefacts" data-switch-jump="taglibs"
+                               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
                                 <span class="text-body-secondary"><g:message code="welcome.artefact.taglibs"/></span>
-                                <span class="fw-medium">${grailsApplication.tagLibClasses.size()}</span>
-                            </li>
-                        </ul>
+                                <span class="fw-medium">${numTagLibs}</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -204,28 +213,91 @@
         </div>
     </div>
 
-    <%-- AVAILABLE CONTROLLERS --%>
+    <%-- AVAILABLE ARTEFACTS: one server-rendered panel per artefact type. The card
+         title is a dropdown that switches which panel is visible; every type-scoped
+         element (title span, count badge, filter input, panel) carries
+         data-switch-for, and welcome.js only toggles visibility, so no localized
+         text lives in the script. --%>
     <div class="container-lg mt-4">
         <div class="row g-4 align-items-start">
             <div class="col-12 col-lg-7">
-                <div class="card border-1 shadow-sm h-100">
+                <div id="available-artefacts" data-switch-scope class="card border-1 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between mb-1">
-                            <h6 class="card-title mb-0 fw-semibold"><g:message code="welcome.controllers.title"/></h6>
+                            <div class="dropdown">
+                                <%-- Bootstrap resolves the menu as the toggle's next sibling, so the
+                                     button carries the heading typography itself instead of nesting
+                                     inside an h6. --%>
+                                <button type="button" class="btn btn-sm p-0 border-0 h6 card-title mb-0 fw-semibold dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        aria-label="${message(code: 'welcome.artefacts.switch')}">
+                                    <span data-switch-for="controllers"><g:message code="welcome.controllers.title"/></span><span data-switch-for="domains" class="d-none"><g:message code="welcome.domains.title"/></span><span data-switch-for="services" class="d-none"><g:message code="welcome.services.title"/></span><span data-switch-for="taglibs" class="d-none"><g:message code="welcome.taglibs.title"/></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center active"
+                                                data-switch-type="controllers" aria-pressed="true">
+                                            <g:message code="welcome.artefact.controllers"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${numControllers}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="domains" aria-pressed="false">
+                                            <g:message code="welcome.artefact.domains"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${numDomains}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="services" aria-pressed="false">
+                                            <g:message code="welcome.artefact.services"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${numServices}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="taglibs" aria-pressed="false">
+                                            <g:message code="welcome.artefact.taglibs"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${numTagLibs}</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="d-flex align-items-center gap-2">
-                                <span class="badge bg-body-tertiary text-body border">
-                                    ${numControllers}
-                                </span>
-                                <g:if test="${numControllers != 0}">
+                                <span class="badge bg-body-tertiary text-body border" data-switch-for="controllers">${numControllers}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="domains">${numDomains}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="services">${numServices}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="taglibs">${numTagLibs}</span>
+                                <g:if test="${numControllers + numDomains + numServices + numTagLibs != 0}">
                                     <div class="dropdown">
                                         <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown"
                                                 data-bs-auto-close="outside" aria-expanded="false"
                                                 aria-label="${message(code: 'welcome.filter.name')}">
                                             <i class="bi bi-filter" aria-hidden="true"></i>
                                         </button>
+                                        <%-- One input per artefact type, toggled with its panel. All four share
+                                             the focus-on-open listener; focus() is a no-op on hidden inputs, so
+                                             only the visible one takes focus. --%>
                                         <div class="dropdown-menu dropdown-menu-end p-2">
                                             <input type="search" class="form-control form-control-sm filter-input"
+                                                   data-switch-for="controllers"
                                                    data-filter-list="#controllers-list" data-filter-empty="#controllers-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="domains"
+                                                   data-filter-list="#domains-list" data-filter-empty="#domains-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="services"
+                                                   data-filter-list="#services-list" data-filter-empty="#services-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="taglibs"
+                                                   data-filter-list="#taglibs-list" data-filter-empty="#taglibs-empty"
                                                    placeholder="${message(code: 'welcome.filter.name')}"
                                                    aria-label="${message(code: 'welcome.filter.name')}">
                                         </div>
@@ -233,6 +305,7 @@
                                 </g:if>
                             </div>
                         </div>
+                        <div data-switch-for="controllers">
                         <g:if test="${numControllers != 0}">
                             <p class="small text-body-secondary mb-3">
                                 <g:message code="welcome.controllers.click"/>
@@ -319,14 +392,410 @@
                             </div>
                         </g:each>
                         </div>
-                        <p id="controllers-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        <g:if test="${numControllers != 0}">
+                            <p id="controllers-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.artefacts.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="domains" class="d-none">
+                        <div id="domains-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="d" in="${grailsApplication.domainClasses.toList().sort { it.shortName }}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2" data-name="${d.shortName}">
+                                        <span class="fw-semibold text-body text-truncate">${d.shortName}</span>
+                                        <span class="small text-body-secondary text-truncate">${d.packageName}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${numDomains != 0}">
+                            <p id="domains-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.artefacts.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="services" class="d-none">
+                        <div id="services-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="s" in="${grailsApplication.serviceClasses.toList().sort { it.shortName }}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2" data-name="${s.shortName}">
+                                        <span class="fw-semibold text-body text-truncate">${s.shortName}</span>
+                                        <span class="small text-body-secondary text-truncate">${s.packageName}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${numServices != 0}">
+                            <p id="services-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.artefacts.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="taglibs" class="d-none">
+                        <div id="taglibs-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="t" in="${grailsApplication.tagLibClasses.toList().sort { it.shortName }}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2" data-name="${t.shortName}">
+                                        <span class="fw-semibold text-body text-truncate">${t.shortName}</span>
+                                        <span class="small text-truncate"><code>${t.namespace}</code> <span class="text-body-secondary">${t.packageName}</span></span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${numTagLibs != 0}">
+                            <p id="taglibs-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.artefacts.none"/></p>
+                        </g:else>
+                        </div>
+                    </div>
+                </div>
+
+                <%-- RUNTIME INTERNALS: listeners, data binding, mime handling and
+                     the request filter pipeline resolved from the running application
+                     context; reuses the artefacts card's data-switch-scope pattern. --%>
+                <g:set var="appListeners"
+                       value="${applicationContext.applicationListeners.toList()
+                               .collect { l -> [name: (l.getClass().simpleName ?: l.getClass().name.tokenize('.').last()),
+                                                packageName: (l.getClass().package?.name ?: ''),
+                                                detail: l.toString()] }
+                               .sort { a, b -> (a.name.toLowerCase() <=> b.name.toLowerCase()) ?: (a.detail <=> b.detail) }}"/>
+                <g:set var="bindingGroups"
+                       value="${[[code: 'welcome.binding.value', beans: applicationContext.getBeansOfType(grails.databinding.converters.ValueConverter)],
+                                 [code: 'welcome.binding.formatted', beans: applicationContext.getBeansOfType(grails.databinding.converters.FormattedValueConverter)],
+                                 [code: 'welcome.binding.structured', beans: applicationContext.getBeansOfType(grails.databinding.TypedStructuredBindingEditor)],
+                                 [code: 'welcome.binding.listeners', beans: applicationContext.getBeansOfType(grails.databinding.events.DataBindingListener)]]}"/>
+                <g:set var="numBindingBeans" value="${bindingGroups.sum { g -> g.beans.size() } ?: 0}"/>
+                <g:set var="mimeTypeProviders"
+                       value="${applicationContext.getBeansOfType(grails.web.mime.MimeTypeProvider)
+                               .entrySet().toList().sort { it.key.toLowerCase() }}"/>
+                <%-- The filters still on the call stack ARE this request's pipeline, in
+                     execution order: walk the reversed stack, keep Filter classes, collapse
+                     the extra frames a filter contributes through its abstract bases, and
+                     number what remains. No registry can report this actual order. --%>
+                <g:set var="requestFilters"
+                       value="${Thread.currentThread().stackTrace.toList().reverse()
+                               .findResults { ste ->
+                                   def cls = null
+                                   try { cls = Class.forName(ste.className, false, Thread.currentThread().contextClassLoader) } catch (Throwable ignored) { }
+                                   (cls != null && jakarta.servlet.Filter.isAssignableFrom(cls)) ? cls : null
+                               }
+                               .inject([]) { acc, cls ->
+                                   def prev = acc ? acc[-1] : null
+                                   if (prev == cls) { return acc }
+                                   if (prev != null && prev.isAssignableFrom(cls)) { acc[-1] = cls; return acc }
+                                   if (prev != null && cls.isAssignableFrom(prev)) { return acc }
+                                   acc << cls
+                               }
+                               .unique()}"/>
+                <g:set var="filterRegistrations"
+                       value="${applicationContext.getBeansOfType(org.springframework.boot.web.servlet.FilterRegistrationBean)
+                               .entrySet().toList().sort { it.value.order }}"/>
+                <g:set var="filterChainProxyType"
+                       value="${ClassUtils.isPresent('org.springframework.security.web.FilterChainProxy', null) ? ClassUtils.forName('org.springframework.security.web.FilterChainProxy', null) : null}"/>
+                <g:set var="securityFilterChains"
+                       value="${filterChainProxyType ? applicationContext.getBeansOfType(filterChainProxyType).values().toList()
+                               .collectMany { proxy -> proxy.filterChains }
+                               .withIndex()
+                               .collect { chain, i ->
+                                   def matcher = ''
+                                   try { matcher = chain.requestMatcher?.toString() ?: '' } catch (Throwable ignored) { }
+                                   [index: i + 1, matcher: matcher, filters: chain.filters]
+                               } : []}"/>
+                <g:set var="numSecurityFilters" value="${securityFilterChains.sum { c -> c.filters.size() } ?: 0}"/>
+
+                <div id="runtime-beans" data-switch-scope class="card border-1 shadow-sm mt-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <div class="dropdown">
+                                <%-- Bootstrap resolves the menu as the toggle's next sibling, so the
+                                     button carries the heading typography itself instead of nesting
+                                     inside an h6. --%>
+                                <button type="button" class="btn btn-sm p-0 border-0 h6 card-title mb-0 fw-semibold dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                        aria-label="${message(code: 'welcome.runtime.switch')}">
+                                    <span data-switch-for="listeners"><g:message code="welcome.listeners.title"/></span><span data-switch-for="binding" class="d-none"><g:message code="welcome.binding.title"/></span><span data-switch-for="mimeproviders" class="d-none"><g:message code="welcome.mime.providers.title"/></span><span data-switch-for="filters" class="d-none"><g:message code="welcome.filters.title"/></span><span data-switch-for="registrations" class="d-none"><g:message code="welcome.registrations.title"/></span><g:if test="${filterChainProxyType}"><span data-switch-for="securitychain" class="d-none"><g:message code="welcome.securitychain.title"/></span></g:if>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center active"
+                                                data-switch-type="listeners" aria-pressed="true">
+                                            <g:message code="welcome.listeners.title"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${appListeners.size()}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="binding" aria-pressed="false">
+                                            <g:message code="welcome.binding.title"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${numBindingBeans}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="mimeproviders" aria-pressed="false">
+                                            <g:message code="welcome.mime.providers.title"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${mimeTypeProviders.size()}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="filters" aria-pressed="false">
+                                            <g:message code="welcome.filters.title"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${requestFilters.size()}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                data-switch-type="registrations" aria-pressed="false">
+                                            <g:message code="welcome.registrations.title"/>
+                                            <span class="badge bg-body-tertiary text-body border ms-3">${filterRegistrations.size()}</span>
+                                        </button>
+                                    </li>
+                                    <g:if test="${filterChainProxyType}">
+                                        <li>
+                                            <button type="button" class="dropdown-item d-flex justify-content-between align-items-center"
+                                                    data-switch-type="securitychain" aria-pressed="false">
+                                                <g:message code="welcome.securitychain.title"/>
+                                                <span class="badge bg-body-tertiary text-body border ms-3">${numSecurityFilters}</span>
+                                            </button>
+                                        </li>
+                                    </g:if>
+                                </ul>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-body-tertiary text-body border" data-switch-for="listeners">${appListeners.size()}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="binding">${numBindingBeans}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="mimeproviders">${mimeTypeProviders.size()}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="filters">${requestFilters.size()}</span>
+                                <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="registrations">${filterRegistrations.size()}</span>
+                                <g:if test="${filterChainProxyType}">
+                                    <span class="badge bg-body-tertiary text-body border d-none" data-switch-for="securitychain">${numSecurityFilters}</span>
+                                </g:if>
+                                <g:if test="${appListeners.size() + numBindingBeans + mimeTypeProviders.size() + requestFilters.size() + filterRegistrations.size() + numSecurityFilters != 0}">
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown"
+                                                data-bs-auto-close="outside" aria-expanded="false"
+                                                aria-label="${message(code: 'welcome.filter.name')}">
+                                            <i class="bi bi-filter" aria-hidden="true"></i>
+                                        </button>
+                                        <%-- One input per bean type, toggled with its panel. All three share
+                                             the focus-on-open listener; focus() is a no-op on hidden inputs, so
+                                             only the visible one takes focus. --%>
+                                        <div class="dropdown-menu dropdown-menu-end p-2">
+                                            <input type="search" class="form-control form-control-sm filter-input"
+                                                   data-switch-for="listeners"
+                                                   data-filter-list="#listeners-list" data-filter-empty="#listeners-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="binding"
+                                                   data-filter-list="#binding-list" data-filter-empty="#binding-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="mimeproviders"
+                                                   data-filter-list="#mimeproviders-list" data-filter-empty="#mimeproviders-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="filters"
+                                                   data-filter-list="#filters-list" data-filter-empty="#filters-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                   data-switch-for="registrations"
+                                                   data-filter-list="#registrations-list" data-filter-empty="#registrations-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                            <g:if test="${filterChainProxyType}">
+                                                <input type="search" class="form-control form-control-sm filter-input d-none"
+                                                       data-switch-for="securitychain"
+                                                       data-filter-list="#securitychain-list" data-filter-empty="#securitychain-empty"
+                                                       placeholder="${message(code: 'welcome.filter.name')}"
+                                                       aria-label="${message(code: 'welcome.filter.name')}">
+                                            </g:if>
+                                        </div>
+                                    </div>
+                                </g:if>
+                            </div>
+                        </div>
+
+                        <div data-switch-for="listeners">
+                        <div id="listeners-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="l" in="${appListeners}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                        data-name="${l.name} ${l.packageName}" title="${l.detail}">
+                                        <span class="fw-semibold text-body text-truncate">${l.name}</span>
+                                        <span class="small text-body-secondary text-truncate">${l.packageName}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${appListeners}">
+                            <p id="listeners-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="binding" class="d-none">
+                        <div id="binding-list">
+                            <g:each var="group" in="${bindingGroups}" status="gIndex">
+                                <div class="${gIndex > 0 ? 'mt-4' : ''}" data-filter-group>
+                                    <div class="px-2 py-2 bg-body-tertiary">
+                                        <div class="small text-uppercase text-body-secondary fw-semibold"
+                                             style="letter-spacing: .04em;">
+                                            <g:message code="${group.code}"/> (${group.beans.size()})
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush">
+                                        <g:each var="entry" in="${group.beans.entrySet().toList().sort { it.key.toLowerCase() }}">
+                                            <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                                data-name="${entry.key} ${entry.value.getClass().simpleName}" title="${entry.value.getClass().name}">
+                                                <span class="fw-semibold text-body text-truncate">${entry.key}</span>
+                                                <span class="small text-body-secondary text-truncate">${entry.value.getClass().name}</span>
+                                            </li>
+                                        </g:each>
+                                    </ul>
+                                </div>
+                            </g:each>
+                        </div>
+                        <g:if test="${numBindingBeans != 0}">
+                            <p id="binding-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="mimeproviders" class="d-none">
+                        <div id="mimeproviders-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="p" in="${mimeTypeProviders}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                        data-name="${p.key} ${p.value.mimeTypes*.name.join(' ')}">
+                                        <span class="fw-semibold text-body text-truncate">${p.key}</span>
+                                        <span class="small text-body-secondary text-truncate">${p.value.mimeTypes*.name.join(', ')}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${mimeTypeProviders}">
+                            <p id="mimeproviders-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="filters" class="d-none">
+                        <g:if test="${requestFilters}">
+                            <p class="small text-body-secondary mb-3">
+                                <g:message code="welcome.filters.request"/>
+                            </p>
+                        </g:if>
+                        <div id="filters-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="f" in="${requestFilters}" status="fi">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                        data-name="${f.simpleName ?: f.name.tokenize('.').last()} ${f.package?.name ?: ''}" title="${f.name}">
+                                        <span class="d-flex align-items-center gap-2 min-w-0">
+                                            <span class="small text-body-secondary" style="font-variant-numeric: tabular-nums;">${(fi + 1).toString().padLeft(2, '0')}</span>
+                                            <span class="fw-semibold text-body text-truncate">${f.simpleName ?: f.name.tokenize('.').last()}</span>
+                                        </span>
+                                        <span class="small text-body-secondary text-truncate">${f.package?.name ?: ''}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${requestFilters}">
+                            <p id="filters-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <div data-switch-for="registrations" class="d-none">
+                        <div id="registrations-list">
+                            <ul class="list-group list-group-flush">
+                                <g:each var="fr" in="${filterRegistrations}">
+                                    <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                        data-name="${fr.key} ${fr.value.filter?.getClass()?.name ?: ''}" title="${fr.value.filter?.getClass()?.name ?: ''}">
+                                        <span class="d-flex align-items-center gap-2 min-w-0">
+                                            <span class="small text-body-secondary" style="font-variant-numeric: tabular-nums;">${fr.value.order}</span>
+                                            <span class="fw-semibold text-body text-truncate">${fr.key}</span>
+                                        </span>
+                                        <span class="small text-body-secondary text-truncate">${fr.value.filter?.getClass()?.name ?: ''}</span>
+                                    </li>
+                                </g:each>
+                            </ul>
+                        </div>
+                        <g:if test="${filterRegistrations}">
+                            <p id="registrations-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                        </g:if>
+                        <g:else>
+                            <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                        </g:else>
+                        </div>
+
+                        <g:if test="${filterChainProxyType}">
+                            <div data-switch-for="securitychain" class="d-none">
+                            <div id="securitychain-list">
+                                <g:each var="chain" in="${securityFilterChains}" status="cIndex">
+                                    <div class="${cIndex > 0 ? 'mt-4' : ''}" data-filter-group>
+                                        <div class="px-2 py-2 bg-body-tertiary">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="small text-uppercase text-body-secondary fw-semibold"
+                                                     style="letter-spacing: .04em;">
+                                                    <g:message code="welcome.securitychain.chain"/> ${chain.index}
+                                                </div>
+                                                <g:if test="${chain.matcher}">
+                                                    <div class="small text-body-secondary text-truncate">${chain.matcher}</div>
+                                                </g:if>
+                                            </div>
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <g:each var="cf" in="${chain.filters}" status="cfi">
+                                                <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                                    data-name="${cf.getClass().simpleName} ${cf.getClass().package?.name ?: ''}" title="${cf.getClass().name}">
+                                                    <span class="d-flex align-items-center gap-2 min-w-0">
+                                                        <span class="small text-body-secondary" style="font-variant-numeric: tabular-nums;">${(cfi + 1).toString().padLeft(2, '0')}</span>
+                                                        <span class="fw-semibold text-body text-truncate">${cf.getClass().simpleName}</span>
+                                                    </span>
+                                                    <span class="small text-body-secondary text-truncate">${cf.getClass().package?.name ?: ''}</span>
+                                                </li>
+                                            </g:each>
+                                        </ul>
+                                    </div>
+                                </g:each>
+                            </div>
+                            <g:if test="${numSecurityFilters != 0}">
+                                <p id="securitychain-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                            </g:if>
+                            <g:else>
+                                <p class="small text-body-secondary mb-0"><g:message code="welcome.beans.none"/></p>
+                            </g:else>
+                            </div>
+                        </g:if>
                     </div>
                 </div>
             </div>
 
             <%-- PLUGINS --%>
             <div class="col-12 col-lg-5">
-                <div class="card border-1 shadow-sm h-100">
+                <div class="card border-1 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <h6 class="card-title mb-0 fw-semibold"><g:message code="welcome.plugins.title"/></h6>
@@ -441,6 +910,122 @@
                                     </li>
                                 </g:each>
                             </ul>
+                        </div>
+                    </div>
+                </g:if>
+                <g:set var="mimeTypes"
+                       value="${applicationContext.containsBean('mimeTypes') ?
+                               applicationContext.getBean('mimeTypes').toList()
+                                       .sort { a, b -> ((a.extension ?: '').toLowerCase() <=> (b.extension ?: '').toLowerCase()) ?: (a.name <=> b.name) } : []}"/>
+                <div class="card border-1 shadow-sm mt-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h6 class="card-title mb-0 fw-semibold"><g:message code="welcome.mime.types.title"/></h6>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-body-tertiary text-body border">
+                                    ${mimeTypes.size()}
+                                </span>
+                                <g:if test="${mimeTypes}">
+                                    <div class="dropdown">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown"
+                                                data-bs-auto-close="outside" aria-expanded="false"
+                                                aria-label="${message(code: 'welcome.filter.name')}">
+                                            <i class="bi bi-filter" aria-hidden="true"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end p-2">
+                                            <input type="search" class="form-control form-control-sm filter-input"
+                                                   data-filter-list="#mime-types-table tbody" data-filter-empty="#mime-types-empty"
+                                                   placeholder="${message(code: 'welcome.filter.name')}"
+                                                   aria-label="${message(code: 'welcome.filter.name')}">
+                                        </div>
+                                    </div>
+                                </g:if>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table id="mime-types-table" class="table table-sm table-striped table-hover"
+                                   data-sortable="true" data-sort-default="extension">
+                                <thead class="small">
+                                <tr>
+                                    <th scope="col"
+                                        class="text-body-secondary ps-0 fw-semibold sortable"
+                                        data-sort-key="extension"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="${message(code: 'welcome.mime.sort.extension')}">
+                                        <g:message code="welcome.mime.extension"/> <span class="sort-hint" aria-hidden="true"></span>
+                                    </th>
+                                    <th scope="col"
+                                        class="text-body-secondary text-end pe-0 fw-semibold sortable"
+                                        data-sort-key="type"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="${message(code: 'welcome.mime.sort.type')}">
+                                        <span class="sort-hint" aria-hidden="true"></span> <g:message code="welcome.mime.type"/>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody class="small">
+                                <g:each var="mime" in="${mimeTypes}">
+                                    <tr data-name="${mime.extension} ${mime.name}" data-extension="${mime.extension}" data-type="${mime.name}">
+                                        <td class="text-truncate">
+                                            ${mime.extension}
+                                        </td>
+                                        <td class="text-end text-body-secondary">
+                                            ${mime.name}
+                                        </td>
+                                    </tr>
+                                </g:each>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="mime-types-empty" class="small text-body-secondary d-none mb-0"><g:message code="welcome.filter.none"/></p>
+                    </div>
+                </div>
+
+                <%-- DATASTORES: shown only when GORM is on the classpath and at least one
+                     datastore bean is registered, resolved without a hard class reference. --%>
+                <g:set var="datastoreType"
+                       value="${ClassUtils.isPresent('org.grails.datastore.mapping.core.Datastore', null) ? ClassUtils.forName('org.grails.datastore.mapping.core.Datastore', null) : null}"/>
+                <g:set var="datastores"
+                       value="${datastoreType ? applicationContext.getBeansOfType(datastoreType).entrySet().toList().sort { it.key.toLowerCase() } : []}"/>
+                <g:if test="${datastores}">
+                    <div class="card border-1 shadow-sm mt-4">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <h6 class="card-title mb-0 fw-semibold"><g:message code="welcome.datastores.title"/></h6>
+                                <span class="badge bg-body-tertiary text-body border">
+                                    ${datastores.size()}
+                                </span>
+                            </div>
+                            <g:each var="ds" in="${datastores}" status="dsIndex">
+                                <g:set var="datastoreListeners"
+                                       value="${ds.value.mappingContext.eventListeners.toList()
+                                               .sort { (it.getClass().simpleName ?: it.getClass().name.tokenize('.').last()).toLowerCase() }}"/>
+                                <div class="${dsIndex > 0 ? 'mt-4' : ''}">
+                                    <div class="px-2 py-2 bg-body-tertiary">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="small text-uppercase text-body-secondary fw-semibold"
+                                                 style="letter-spacing: .04em;">
+                                                ${ds.key}
+                                            </div>
+                                            <div class="small text-body-secondary">
+                                                <g:message code="welcome.datastores.listeners"/> (${datastoreListeners.size()})
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush small">
+                                        <g:each var="dsListener" in="${datastoreListeners}">
+                                            <li class="list-group-item px-2 d-flex align-items-center justify-content-between gap-2"
+                                                title="${dsListener}">
+                                                <span class="fw-medium text-truncate">${dsListener.getClass().simpleName ?: dsListener.getClass().name.tokenize('.').last()}</span>
+                                                <span class="small text-body-secondary text-truncate">${dsListener.getClass().package?.name ?: ''}</span>
+                                            </li>
+                                        </g:each>
+                                    </ul>
+                                </div>
+                            </g:each>
                         </div>
                     </div>
                 </g:if>

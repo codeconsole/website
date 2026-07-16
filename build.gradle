@@ -32,7 +32,11 @@ repositories {
 
 dependencies {
     console "org.apache.grails:grails-console"
-    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    // devtools' RestartClassLoader clashes with the composite build (includeBuild of
+    // grails-core): Hibernate maps domain classes from the base loader while app code
+    // (e.g. BootStrap) sees restart-loader copies -> "Not an entity". Disabled while
+    // developing against the local framework checkout.
+    //developmentOnly "org.springframework.boot:spring-boot-devtools"
     implementation platform("org.apache.grails:grails-bom:$grailsVersion")
     implementation "org.springframework.boot:spring-boot-starter-logging"
     implementation "org.springframework.boot:spring-boot-starter-validation"
@@ -50,6 +54,8 @@ dependencies {
     implementation "org.apache.grails:grails-sitemesh3"
     implementation "org.apache.grails:grails-interceptors"
     implementation "org.apache.grails:grails-scaffolding"
+    implementation "org.apache.grails:grails-spring-security"
+    implementation "org.apache.grails:grails-spring-security-ui"
     implementation "org.apache.grails:grails-data-hibernate5"
     implementation "org.apache.grails:grails-gsp"
     integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
