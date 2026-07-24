@@ -31,7 +31,6 @@ repositories {
 }
 
 dependencies {
-    console "org.apache.grails:grails-console"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
     implementation platform("org.apache.grails:grails-bom:$grailsVersion")
     implementation "org.springframework.boot:spring-boot-starter-logging"
