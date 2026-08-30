@@ -1,3 +1,4 @@
+@{ model="website.Sample sample" }
 <!DOCTYPE html>
 <html>
 <head>
