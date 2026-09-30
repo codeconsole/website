@@ -1,4 +1,4 @@
-@{ model="List<website.Sample> sampleList; Integer sampleCount" }
+@{ model="List<website.Sample> sampleList; Number sampleCount" }
 <!DOCTYPE html>
 <html>
 <head>

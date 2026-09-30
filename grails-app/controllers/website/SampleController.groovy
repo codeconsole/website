@@ -14,7 +14,7 @@ class SampleController {
         respond sampleService.list(params), model:[sampleCount: sampleService.count()]
     }
 
-    def show(Long id) {
+    def show(Serializable id) {
         respond sampleService.get(id)
     }
 
@@ -44,7 +44,7 @@ class SampleController {
         }
     }
 
-    def edit(Long id) {
+    def edit(Serializable id) {
         respond sampleService.get(id)
     }
 
@@ -70,7 +70,7 @@ class SampleController {
         }
     }
 
-    def delete(Long id) {
+    def delete(Serializable id) {
         if (id == null) {
             notFound()
             return
