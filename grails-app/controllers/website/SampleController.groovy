@@ -38,7 +38,7 @@ class SampleController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.created.message', args: [message(code: 'sample.label', default: 'Sample'), sample.id])
-                redirect sample
+                redirect action: "show", id: sample.id, method: "GET"
             }
             '*' { respond sample, [status: CREATED] }
         }
@@ -64,7 +64,7 @@ class SampleController {
         request.withFormat {
             form multipartForm {
                 flash.message = message(code: 'default.updated.message', args: [message(code: 'sample.label', default: 'Sample'), sample.id])
-                redirect sample
+                redirect action: "show", id: sample.id, method: "GET"
             }
             '*'{ respond sample, [status: OK] }
         }
